@@ -24,6 +24,7 @@ def load_in_data_origin(csv0_file_name, csv1_file_name, json_filename):
     return data
 
 
+# groupby destination, return gpd df
 def load_in_data_dest(csv0_file_name,csv1_file_name,json_filename):
     df0 = gpd.read_file(json_filename)
     df1 = pd.read_csv(csv0_file_name)
@@ -34,6 +35,7 @@ def load_in_data_dest(csv0_file_name,csv1_file_name,json_filename):
     return data
 
 
+# groupby carrier, return gpd df
 def load_in_data_carrier(csv0_file_name,csv1_file_name):
     df1 = pd.read_csv(csv0_file_name)
     df2 = pd.read_csv(csv1_file_name)
@@ -282,25 +284,25 @@ def main():
     data_route = load_in_data_route('resources/flight-dataset-2/flights-small.csv','resources/gz_2010_us_040_00_5m.json')
     df0 = gpd.read_file('resources/gz_2010_us_040_00_5m.json')
     df1 = pd.read_csv('resources/flight-dataset-2/flights-small.csv')
-    # df2 = pd.read_csv('resources/flight-dataset-2/carriers.csv')
-    # print(df0.columns)
-    # print(df1.columns)
-    # print(df2.columns)
-    # plot_data_origin(data_origin)
-    # plot_data_dest(data_dest)
-    # plot_data_biggest_carrier(data_carrier)
-    # plot_data_worst_carrier_delay(data_carrier)
-    # plot_data_worst_carrier_cancel(data_carrier)
-    # plot_data_price_delay_carriers(data_carrier)
-    # plot_data_price_delay_origin(data_origin)
-    # plot_data_price_delay_dest(data_dest)
-    # plot_data_price_cancel_dest(data_dest)
-    # plot_data_price_cancel_origin(data_origin)
-    # plot_data_price_cancel_carriers(data_carrier)
-    # plot_data_one_route(df1, 'Seattle WA', 'New York NY')
-    # plot_data_route(data_route)
-    # fit_and_predict_delay(df1)
-    # make_pdf(data_dest)
+    df2 = pd.read_csv('resources/flight-dataset-2/carriers.csv')
+    print(df0.columns)
+    print(df1.columns)
+    print(df2.columns)
+    plot_data_origin(data_origin)
+    plot_data_dest(data_dest)
+    plot_data_biggest_carrier(data_carrier)
+    plot_data_worst_carrier_delay(data_carrier)
+    plot_data_worst_carrier_cancel(data_carrier)
+    plot_data_price_delay_carriers(data_carrier)
+    plot_data_price_delay_origin(data_origin)
+    plot_data_price_delay_dest(data_dest)
+    plot_data_price_cancel_dest(data_dest)
+    plot_data_price_cancel_origin(data_origin)
+    plot_data_price_cancel_carriers(data_carrier)
+    plot_data_one_route(df1, 'Seattle WA', 'New York NY')
+    plot_data_route(data_route)
+    fit_and_predict_delay(df1)
+    make_pdf(data_dest)
     make_web(df1, plot_data_one_route)
     #plot_data_route_best(data_route)
     #plot_data_route_worst(data_route)
