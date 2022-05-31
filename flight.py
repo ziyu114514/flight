@@ -8,6 +8,7 @@ from pywebio.output import *
 from pywebio.input import *
 from PIL import Image
 from fpdf import FPDF
+from pywebio.session import run_js
 from sklearn.metrics import mean_squared_error
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import train_test_split
@@ -270,10 +271,23 @@ def make_pdf(data):
 
 def make_web(data, plot):
     pywebio.config(css_style="#output-container{min-width: 90vw;}")
-    dep = pywebio.input.input(label='Departure', type=TEXT, onchange=True, placeholder='Please follow the format "Seattle WA"')
-    dest = pywebio.input.input(label='Destination', type=TEXT, onchange=True, placeholder='Please follow the format "Seattle WA"')
-    with Image.open("US_day_delay_one_route_delay.png") as im:
-        pywebio.output.put_image(im)
+    user_input = input_group('View historical delay', [
+                    input(label='Departure City', type=TEXT, onchange=True, name='dep',
+                          placeholder='Seattle, WA (Please use comma to separate city and state)', required=True),
+                    input(label='Destination City', type=TEXT, onchange=True, name='dest',
+                          placeholder='New York, NY (Please use comma to separate city and state)', required=True)
+                    ])
+    dep_sep = user_input['dep'].split(',')
+    dest_sep = user_input['dest'].split(',')
+    dep = dep_sep[0].title().strip() + " " + dep_sep[1].upper().strip()
+    dest = dest_sep[0].title().strip() + " " + dest_sep[1].upper().strip()
+    plot(data, dep, dest)
+    img = open('US_day_delay_one_route_delay.png', 'rb')
+    put_image(img.read())
+    # put_button('Return to input', onclick=run_js('window.location.reload()'))
+    # put_file(dep + "to" + dest + "route delay.png", img, "Download PNG")
+    # with Image.open("US_day_delay_one_route_delay.png") as im:
+    #     put_image(im)
 
 
 def main():
@@ -285,24 +299,24 @@ def main():
     df0 = gpd.read_file('resources/gz_2010_us_040_00_5m.json')
     df1 = pd.read_csv('resources/flight-dataset-2/flights-small.csv')
     df2 = pd.read_csv('resources/flight-dataset-2/carriers.csv')
-    print(df0.columns)
-    print(df1.columns)
-    print(df2.columns)
-    plot_data_origin(data_origin)
-    plot_data_dest(data_dest)
-    plot_data_biggest_carrier(data_carrier)
-    plot_data_worst_carrier_delay(data_carrier)
-    plot_data_worst_carrier_cancel(data_carrier)
-    plot_data_price_delay_carriers(data_carrier)
-    plot_data_price_delay_origin(data_origin)
-    plot_data_price_delay_dest(data_dest)
-    plot_data_price_cancel_dest(data_dest)
-    plot_data_price_cancel_origin(data_origin)
-    plot_data_price_cancel_carriers(data_carrier)
-    plot_data_one_route(df1, 'Seattle WA', 'New York NY')
-    plot_data_route(data_route)
-    fit_and_predict_delay(df1)
-    make_pdf(data_dest)
+    # print(df0.columns)
+    # print(df1.columns)
+    # print(df2.columns)
+    # plot_data_origin(data_origin)
+    # plot_data_dest(data_dest)
+    # plot_data_biggest_carrier(data_carrier)
+    # plot_data_worst_carrier_delay(data_carrier)
+    # plot_data_worst_carrier_cancel(data_carrier)
+    # plot_data_price_delay_carriers(data_carrier)
+    # plot_data_price_delay_origin(data_origin)
+    # plot_data_price_delay_dest(data_dest)
+    # plot_data_price_cancel_dest(data_dest)
+    # plot_data_price_cancel_origin(data_origin)
+    # plot_data_price_cancel_carriers(data_carrier)
+    # plot_data_one_route(df1, 'Seattle WA', 'New York NY')
+    # plot_data_route(data_route)
+    # fit_and_predict_delay(df1)
+    # make_pdf(data_dest)
     make_web(df1, plot_data_one_route)
     #plot_data_route_best(data_route)
     #plot_data_route_worst(data_route)
