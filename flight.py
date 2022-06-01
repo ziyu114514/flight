@@ -3,12 +3,12 @@ import matplotlib.pyplot as plt
 import geopandas as gpd
 import pywebio
 import seaborn as sns
-import plotly.graph_objects as go
+# import plotly.graph_objects as go
 from pywebio.output import *
 from pywebio.input import *
-from PIL import Image
+# from PIL import Image
 from fpdf import FPDF
-from pywebio.session import run_js
+# from pywebio.session import run_js
 from sklearn.metrics import mean_squared_error
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import train_test_split
@@ -87,31 +87,30 @@ def plot_data_dest(data):
 
 # plot data for the 10 big carriers
 def plot_data_biggest_carrier(data):
-    data = data.sort_values(by='capacity', ascending=False)
-    data = data.head(10)
-    data['total_delay'] = data['arrival_delay'] + data['departure_delay']
-    sns.catplot(x='name', y='total_delay', data=data, kind='bar')
-    plt.xticks(rotation=-90)
+    data_big = data.sort_values(by='capacity', ascending=False)
+    data_big = data_big.head(5)
+    data_big = data_big.sort_values(by='arrival_delay', ascending=False)
+    sns.catplot(x='name', y='arrival_delay', data=data_big, kind='bar')
+    plt.xticks(rotation=45)
     plt.tight_layout()
-    plt.savefig('US_carrier_biggest.png')
+    plt.savefig('delay_10_biggest_carrier.png')
     print('image saved')
 
 
 # plot data for the 10 smallest carriers
 def plot_data_worst_carrier_delay(data):
-    data['total_delay'] = data['arrival_delay'] + data['departure_delay']
-    data = data.sort_values(by='total_delay', ascending=False)
-    data = data.head(10)
-    sns.catplot(x='name', y='total_delay', data=data, kind='bar')
-    plt.xticks(rotation=-90)
+    data_small = data.sort_values(by='arrival_delay', ascending=False)
+    data_small = data_small.head(5)
+    sns.catplot(x='name', y='arrival_delay', data=data_small, kind='bar')
+    plt.xticks(rotation=45)
     plt.tight_layout()
-    plt.savefig('US_carrier_worst_delay.png')
+    plt.savefig('worst_delay_carrier.png')
 
 
 # plot data for 10 carriers with the highest cancel rate
 def plot_data_worst_carrier_cancel(data):
     data = data.sort_values(by='canceled', ascending=False)
-    data = data.head(9)
+    data = data.head(5)
     sns.catplot(x='name', y='canceled', data=data, kind='bar')
     plt.xticks(rotation=-90)
     plt.tight_layout()
@@ -119,72 +118,72 @@ def plot_data_worst_carrier_cancel(data):
 
 
 # group by carriers, plot the relationship between price and delay
-def plot_data_price_delay_carriers(data):
-    data = data.sort_values(by='price', ascending=True)
-    data['total_delay'] = data['arrival_delay'] + data['departure_delay']
-    data = data.head(100)
-    sns.relplot(x='price', y='total_delay', data=data)
-    #plt.figure(figsize=(20,10))
-    plt.savefig('US_price_delay_carriers.png')
-    sns.regplot(x='price', y='total_delay', data=data)
-    plt.savefig('US_price_delay_carriers_reg.png')
+# def plot_data_price_delay_carriers(data):
+#     data = data.sort_values(by='price', ascending=True)
+#     data['total_delay'] = data['arrival_delay'] + data['departure_delay']
+#     data = data.head(100)
+#     sns.relplot(x='price', y='total_delay', data=data)
+#     #plt.figure(figsize=(20,10))
+#     plt.savefig('US_price_delay_carriers.png')
+#     sns.regplot(x='price', y='total_delay', data=data)
+#     plt.savefig('US_price_delay_carriers_reg.png')
 
 
 # group by origin state, plot the relationship between price and delay
-def plot_data_price_delay_origin(data):
-    data = data.sort_values(by='price', ascending=True)
-    data['total_delay'] = data['arrival_delay'] + data['departure_delay']
-    data = data.head(100)
-    sns.relplot(x='price', y='total_delay', data=data)
-    # plt.figure(figsize=(20,10))
-    plt.savefig('US_price_delay_origin.png')
-    sns.regplot(x='price', y='total_delay', data=data)
-    # plt.figure(figsize=(20,10))
-    plt.savefig('US_price_delay_origin_reg.png')
-
-
-# group by destination state, plot the relationship between price and delay
-def plot_data_price_delay_dest(data):
-    data = data.sort_values(by='price', ascending=True)
-    data['total_delay'] = data['arrival_delay'] + data['departure_delay']
-    data = data.head(100)
-    sns.relplot(x='price', y='total_delay', data=data)
-    # plt.figure(figsize=(20,10))
-    plt.savefig('US_price_delay_dest.png')
-    sns.regplot(x='price', y='total_delay', data=data)
-    # plt.figure(figsize=(20,10))
-    plt.savefig('US_price_cancel_dest_reg.png')
+# def plot_data_price_delay_origin(data):
+#     data = data.sort_values(by='price', ascending=True)
+#     data['total_delay'] = data['arrival_delay'] + data['departure_delay']
+#     data = data.head(100)
+#     sns.relplot(x='price', y='total_delay', data=data)
+#     # plt.figure(figsize=(20,10))
+#     plt.savefig('US_price_delay_origin.png')
+#     sns.regplot(x='price', y='total_delay', data=data)
+#     # plt.figure(figsize=(20,10))
+#     plt.savefig('US_price_delay_origin_reg.png')
+#
+#
+# # group by destination state, plot the relationship between price and delay
+# def plot_data_price_delay_dest(data):
+#     data = data.sort_values(by='price', ascending=True)
+#     data['total_delay'] = data['arrival_delay'] + data['departure_delay']
+#     data = data.head(100)
+#     sns.relplot(x='price', y='total_delay', data=data)
+#     # plt.figure(figsize=(20,10))
+#     plt.savefig('US_price_delay_dest.png')
+#     sns.regplot(x='price', y='total_delay', data=data)
+#     # plt.figure(figsize=(20,10))
+#     plt.savefig('US_price_cancel_dest_reg.png')
 
 
 # group by carriers, plot the relationship between price and cancel rate
-def plot_data_price_cancel_carriers(data):
-    data = data.sort_values(by='price', ascending=True)
-    sns.relplot(x='price', y='canceled', data=data)
-    #plt.figure(figsize=(20,10))
-    plt.savefig('US_price_cancel_carriers.png')
-    sns.regplot(x='price', y='canceled', data=data)
-    plt.savefig('US_price_cancel_carriers_reg.png')
-
-
-# group by origin state, plot the relationship between price and cancel rate
-def plot_data_price_cancel_origin(data):
-    data = data.sort_values(by='price', ascending=True)
-    sns.relplot(x='price', y='canceled', data=data,)
-    plt.savefig('US_price_cancel_origin.png')
-    sns.regplot(x='price', y='canceled', data=data)
-    # plt.figure(figsize=(20,10))
-    plt.savefig('US_price_cancel_origin_reg.png')
-
-
-# group by destination state, plot the relationship between price and cancel rate
-def plot_data_price_cancel_dest(data):
-    data = data.sort_values(by='price', ascending=True)
-    sns.relplot(x='price', y='canceled', data=data)
-    # plt.figure(figsize=(20,10))
-    plt.savefig('US_price_cancel_dest.png')
-    sns.regplot(x='price', y='canceled', data=data)
-    # plt.figure(figsize=(20,10))
-    plt.savefig('US_price_cancel_dest_reg.png')
+# def plot_data_price_cancel_carriers(data):
+#     data = data.sort_values(by='price', ascending=True)
+#     sns.relplot(x='price', y='canceled', data=data)
+#     #plt.figure(figsize=(20,10))
+#     plt.savefig('US_price_cancel_carriers.png')
+#     sns.regplot(x='price', y='canceled', data=data)
+#     plt.savefig('US_price_cancel_carriers_reg.png')
+#
+#
+# # group by origin state, plot the relationship between price and cancel rate
+# def plot_data_price_cancel_origin(data):
+#     data = data.sort_values(by='price', ascending=True)
+#     sns.relplot(x='price', y='canceled', data=data,)
+#     plt.savefig('US_price_cancel_origin.png')
+#     sns.regplot(x='price', y='canceled', data=data)
+#     # plt.figure(figsize=(20,10))
+#     plt.savefig('US_price_cancel_origin_reg.png')
+#
+#
+# # group by destination state, plot the relationship between price and cancel rate
+# def plot_data_price_cancel_dest(data):
+#     data = data.sort_values(by='price', ascending=True)
+#     sns.relplot(x='price', y='canceled', data=data)
+#     # plt.figure(figsize=(20,10))
+#     plt.savefig('US_price_cancel_dest.png')
+#     sns.regplot(x='price', y='canceled', data=data)
+#     # plt.figure(figsize=(20,10))
+#     plt.savefig('US_price_cancel_dest_reg.png')
 
 
 # save two figs, one is relationship between price and delay for a route
@@ -206,19 +205,19 @@ def plot_data_one_route(data, origin, dest):
 
 
 # plot 10 best and worst routes in the US based on delay
-def plot_data_route(data):
-    data['total_delay'] = data['arrival_delay'] + data['departure_delay']
-    data = data.sort_values(by='total_delay', ascending=True)
-    data_asc = data.head(10)
-    print(data_asc)
-    data = data.sort_values(by='total_delay', ascending=False)
-    data_des = data.head(10)
-    print(data_des)
-    fig, ax = plt.subplots(1, figsize=(25.6, 14.4))
-    data.plot(ax=ax, color='#EEEEEE', edgecolor='#AAAAAA')
-    data_asc.plot(ax=ax, column='total_delay', legend=True, vmin=-50, vmax=520)
-    data_des.plot(ax=ax, column='total_delay', vmin=-50, vmax=520)
-    plt.savefig('US_best_and_worst_delay_route.png')
+# def plot_data_route(data):
+#     data['total_delay'] = data['arrival_delay'] + data['departure_delay']
+#     data = data.sort_values(by='total_delay', ascending=True)
+#     data_asc = data.head(10)
+#     print(data_asc)
+#     data = data.sort_values(by='total_delay', ascending=False)
+#     data_des = data.head(10)
+#     print(data_des)
+#     fig, ax = plt.subplots(1, figsize=(25.6, 14.4))
+#     data.plot(ax=ax, color='#EEEEEE', edgecolor='#AAAAAA')
+#     data_asc.plot(ax=ax, column='total_delay', legend=True, vmin=-50, vmax=520)
+#     data_des.plot(ax=ax, column='total_delay', vmin=-50, vmax=520)
+#     plt.savefig('US_best_and_worst_delay_route.png')
 
 
 def plot_distance_delay(data):
@@ -256,7 +255,7 @@ def fit_and_predict_delay(data):
     model.fit(features_train, labels_train)
     label_predictions_test = model.predict(features_test)
     result = mean_squared_error(labels_test, label_predictions_test)
-    print(result)
+    print("The mean squared error is" + result)
     return result
 
 
@@ -302,11 +301,11 @@ def main():
     # print(df0.columns)
     # print(df1.columns)
     # print(df2.columns)
-    # plot_data_origin(data_origin)
-    # plot_data_dest(data_dest)
-    # plot_data_biggest_carrier(data_carrier)
-    # plot_data_worst_carrier_delay(data_carrier)
-    # plot_data_worst_carrier_cancel(data_carrier)
+    plot_data_origin(data_origin)
+    plot_data_dest(data_dest)
+    plot_data_biggest_carrier(data_carrier)
+    plot_data_worst_carrier_delay(data_carrier)
+    plot_data_worst_carrier_cancel(data_carrier)
     # plot_data_price_delay_carriers(data_carrier)
     # plot_data_price_delay_origin(data_origin)
     # plot_data_price_delay_dest(data_dest)
@@ -315,8 +314,8 @@ def main():
     # plot_data_price_cancel_carriers(data_carrier)
     # plot_data_one_route(df1, 'Seattle WA', 'New York NY')
     # plot_data_route(data_route)
-    # fit_and_predict_delay(df1)
-    # make_pdf(data_dest)
+    fit_and_predict_delay(df1)
+    make_pdf(data_dest)
     make_web(df1, plot_data_one_route)
     #plot_data_route_best(data_route)
     #plot_data_route_worst(data_route)
