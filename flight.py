@@ -86,10 +86,11 @@ class Flight:
         plt.savefig('US_dest.png')
         print('US_dest.png saved')
 
-    # plot data for the 10 big carriers
+    # plot data for the 5 big carriers
     def plot_data_biggest_carrier(data):
-        data_big = data.sort_values(by='capacity', ascending=False)
-        data_big = data_big.head(5)
+        data_big_original = data.sort_values(by='capacity', ascending=False)
+        data_big = data_big_original.head(5)
+        test_value = data_big_original.iloc[0]['name']
         data_big = data_big.sort_values(by='arrival_delay', ascending=False)
         sns.catplot(x='name', y='arrival_delay', data=data_big, kind='bar')
         plt.xticks(rotation=45, ha='right', rotation_mode='anchor')
@@ -98,11 +99,13 @@ class Flight:
         plt.tight_layout()
         plt.savefig('delay_5_biggest_carrier.png')
         print('delay_5_biggest_carrier.png saved')
+        return test_value
 
-    # plot data for the 10 smallest carriers
+    # plot data for the 5 most delayed carriers
     def plot_data_worst_carrier_delay(data):
-        data_small = data.sort_values(by='arrival_delay', ascending=False)
-        data_small = data_small.head(5)
+        data_small_original = data.sort_values(by='arrival_delay', ascending=False)
+        data_small = data_small_original.head(5)
+        test_value = data_small_original.iloc[0]['name']
         sns.catplot(x='name', y='arrival_delay', data=data_small, kind='bar')
         plt.xticks(rotation=45, ha='right', rotation_mode='anchor')
         plt.xlabel('Airline Carrier')
@@ -110,11 +113,13 @@ class Flight:
         plt.tight_layout()
         plt.savefig('most_delay_5_carrier.png')
         print('most_delay_5_carrier.png saved')
+        return test_value
 
     # plot data for 10 carriers with the highest cancel rate
     def plot_data_worst_carrier_cancel(data):
-        data = data.sort_values(by='canceled', ascending=False)
-        data = data.head(5)
+        data_original = data.sort_values(by='canceled', ascending=False)
+        data = data_original.head(5)
+        test_value = data_original.iloc[0]['name']
         sns.catplot(x='name', y='canceled', data=data, kind='bar')
         plt.xticks(rotation=45, ha='right', rotation_mode='anchor')
         plt.xlabel('Airline Carrier')
@@ -122,6 +127,7 @@ class Flight:
         plt.tight_layout()
         plt.savefig('most_canceled_5_carrier.png')
         print('most_canceled_5_carrier.png saved')
+        return test_value
 
 
     # save two figs, one is relationship between price and delay for a route
@@ -134,12 +140,12 @@ class Flight:
         sns.regplot(x='price', y='total_delay', data=data)
         name = 'Relationship between price and total delay for route ' + origin + ' to ' + dest
         plt.title(name)
-        plt.savefig('US_price_delay_one_route_delay.png')
+        plt.savefig('price_vs_delay.png')
         plt.figure(figsize=(25.6, 14.4))
         sns.regplot(x='day_of_week_id', y='total_delay', data=data)
         name = 'Relationship between day and total delay for route ' + origin + ' to ' + dest
         plt.title(name)
-        plt.savefig('US_day_delay_one_route_delay.png')
+        plt.savefig('day_vs_delay.png')
 
 
     def fit_and_predict_delay(data):
@@ -172,5 +178,7 @@ class Flight:
         dep = dep_sep[0].title().strip() + " " + dep_sep[1].upper().strip()
         dest = dest_sep[0].title().strip() + " " + dest_sep[1].upper().strip()
         plot(data, dep, dest)
-        img = open('US_day_delay_one_route_delay.png', 'rb')
-        put_image(img.read())
+        price_delay = open('price_vs_delay.png', 'rb')
+        put_image(price_delay.read())
+        day_delay = open('day_vs_delay.png', 'rb')
+        put_image(day_delay.read())
