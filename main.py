@@ -19,8 +19,6 @@ def main():
     answer = int(input('Do you want to search historical delay for an air route? (1 for Yes, 0 for No)'))
     if answer == 1:
         flight.Flight.make_web(df_flight, flight.Flight.plot_data_one_route)
-    else:
-        pass
 
 
 if __name__ == '__main__':

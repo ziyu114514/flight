@@ -19,6 +19,7 @@ class Flight:
                                                'canceled': 'mean', 'capacity': 'sum'})
         df0 = df0[(df0['NAME'] != 'Alaska') & (df0['NAME'] != 'Hawaii')]
         data = df0.merge(df1, left_on='NAME', right_on='origin_state', how='right')
+        print('origin data loaded')
         return data
 
     # groupby destination, return gpd df
@@ -30,6 +31,7 @@ class Flight:
              'capacity': 'sum'})
         df0 = df0[(df0['NAME'] != 'Alaska') & (df0['NAME'] != 'Hawaii')]
         data = df0.merge(df1, left_on='NAME', right_on='dest_state', how='right')
+        print('destination data loaded')
         return data
 
     # groupby carrier, return gpd df
@@ -37,13 +39,10 @@ class Flight:
         df1 = pd.read_csv(csv0_file_name)
         df2 = pd.read_csv(csv1_file_name)
         df1 = df1.merge(df2, left_on='carrier_id', right_on='cid', how='left')
-        # df1['num_flights'] = 1
         df1 = df1.groupby('name', as_index=False).agg(
             {'arrival_delay': 'mean', 'price': 'mean', 'departure_delay': 'mean', 'canceled': 'mean',
              'capacity': 'sum'})
-        # print(df1[['name', 'num_flights']])
-        # df1['cancel rate'] = df1['canceled'] / df1['num_flights']
-        # df1['delay rate'] = df1['arrival_delay'] / df1['num_flights']
+        print('carrier data loaded')
         return df1
 
     # group by air routes, return gpd df
@@ -55,7 +54,9 @@ class Flight:
              'canceled': 'mean', 'capacity': 'sum'})
         df0 = df0[(df0['NAME'] != 'Alaska') & (df0['NAME'] != 'Hawaii')]
         data = df0.merge(df1, left_on='NAME', right_on='origin_state', how='right')
+        print('route data loaded')
         return data
+
 
     # based on departure state, draw 4 figs
     def plot_data_origin(data):
@@ -69,7 +70,7 @@ class Flight:
         ax3.set_title('departure delay of airlines for states as origin')
         ax4.set_title('cancellation of airlines for states as origin')
         plt.savefig('US_origin.png')
-        print('image saved')
+        print('US_origin.png saved')
 
     # based on departure state, draw 4 figs
     def plot_data_dest(data):
@@ -83,7 +84,7 @@ class Flight:
         ax3.set_title('departure delay of airlines for states as destination')
         ax4.set_title('cancellation of airlines for states as destination')
         plt.savefig('US_dest.png')
-        print('image saved')
+        print('US_dest.png saved')
 
     # plot data for the 10 big carriers
     def plot_data_biggest_carrier(data):
@@ -91,29 +92,36 @@ class Flight:
         data_big = data_big.head(5)
         data_big = data_big.sort_values(by='arrival_delay', ascending=False)
         sns.catplot(x='name', y='arrival_delay', data=data_big, kind='bar')
-        plt.xticks(rotation=45)
+        plt.xticks(rotation=45, ha='right', rotation_mode='anchor')
+        plt.xlabel('Airline Carrier')
+        plt.ylabel('Average Delay Time (minutes)')
         plt.tight_layout()
-        plt.savefig('delay_10_biggest_carrier.png')
-        print('image saved')
+        plt.savefig('delay_5_biggest_carrier.png')
+        print('delay_5_biggest_carrier.png saved')
 
     # plot data for the 10 smallest carriers
     def plot_data_worst_carrier_delay(data):
         data_small = data.sort_values(by='arrival_delay', ascending=False)
         data_small = data_small.head(5)
         sns.catplot(x='name', y='arrival_delay', data=data_small, kind='bar')
-        plt.xticks(rotation=45)
+        plt.xticks(rotation=45, ha='right', rotation_mode='anchor')
+        plt.xlabel('Airline Carrier')
+        plt.ylabel('Average Delay Time (minutes)')
         plt.tight_layout()
-        plt.savefig('worst_delay_carrier.png')
+        plt.savefig('most_delay_5_carrier.png')
+        print('most_delay_5_carrier.png saved')
 
     # plot data for 10 carriers with the highest cancel rate
     def plot_data_worst_carrier_cancel(data):
-        data = data.groupby
         data = data.sort_values(by='canceled', ascending=False)
         data = data.head(5)
         sns.catplot(x='name', y='canceled', data=data, kind='bar')
-        plt.xticks(rotation=-90)
+        plt.xticks(rotation=45, ha='right', rotation_mode='anchor')
+        plt.xlabel('Airline Carrier')
+        plt.ylabel('Cancel Rate Per Flight')
         plt.tight_layout()
-        plt.savefig('US_carrier_worst_canceled.png')
+        plt.savefig('most_canceled_5_carrier.png')
+        print('most_canceled_5_carrier.png saved')
 
 
     # save two figs, one is relationship between price and delay for a route
