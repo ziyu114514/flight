@@ -13,6 +13,7 @@ def main():
     flight.Flight.plot_data_origin(data_origin)
     flight.Flight.plot_data_dest(data_dest)
     flight.Flight.plot_data_biggest_carrier(data_carrier)
+    flight.Flight.plot_data_least_carrier_delay(data_carrier)
     flight.Flight.plot_data_worst_carrier_delay(data_carrier)
     flight.Flight.plot_data_worst_carrier_cancel(data_carrier)
     # flight.Flight.fit_and_predict_delay(df_flight)

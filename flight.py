@@ -57,7 +57,6 @@ class Flight:
         print('route data loaded')
         return data
 
-
     # based on departure state, draw 4 figs
     def plot_data_origin(data):
         fig, [[ax1, ax4], [ax3, ax2]] = plt.subplots(2, 2, figsize=(25.6, 14.4))
@@ -115,6 +114,17 @@ class Flight:
         print('most_delay_5_carrier.png saved')
         return test_value
 
+    def plot_data_least_carrier_delay(data):
+        data_small_original = data.sort_values(by='arrival_delay', ascending=True)
+        data_small = data_small_original.head(5)
+        sns.catplot(x='name', y='arrival_delay', data=data_small, kind='bar')
+        plt.xticks(rotation=45, ha='right', rotation_mode='anchor')
+        plt.xlabel('Airline Carrier')
+        plt.ylabel('Average Delay Time (minutes)')
+        plt.tight_layout()
+        plt.savefig('least_delay_5_carrier.png')
+        print('least_delay_5_carrier.png saved')
+
     # plot data for 10 carriers with the highest cancel rate
     def plot_data_worst_carrier_cancel(data):
         data_original = data.sort_values(by='canceled', ascending=False)
@@ -128,7 +138,6 @@ class Flight:
         plt.savefig('most_canceled_5_carrier.png')
         print('most_canceled_5_carrier.png saved')
         return test_value
-
 
     # save two figs, one is relationship between price and delay for a route
     # another is relationship between day of the week and delay for a route
@@ -147,7 +156,6 @@ class Flight:
         plt.title(name)
         plt.savefig('day_vs_delay.png')
 
-
     def fit_and_predict_delay(data):
         data = data[['origin_state', 'origin_city', 'price', 'dest_city', 'dest_state', 'carrier_id', 'distance',
                      'day_of_week_id', 'arrival_delay', 'departure_delay', 'capacity']]
@@ -163,7 +171,6 @@ class Flight:
         print('Machine Learning done. Mean squared error of the model is', end=' ')
         print(result)
         return result
-
 
     def make_web(data, plot):
         pywebio.config(css_style="#output-container{min-width: 90vw;}")
