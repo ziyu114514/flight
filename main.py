@@ -16,7 +16,7 @@ def main():
     flight.Flight.plot_data_least_carrier_delay(data_carrier)
     flight.Flight.plot_data_worst_carrier_delay(data_carrier)
     flight.Flight.plot_data_worst_carrier_cancel(data_carrier)
-    # flight.Flight.fit_and_predict_delay(df_flight)
+    flight.Flight.fit_and_predict_delay(df_flight)
     answer = int(input('Do you want to search historical delay for an air route? (1 for Yes, 0 for No)'))
     if answer == 1:
         flight.Flight.make_web(df_flight, flight.Flight.plot_data_one_route)
